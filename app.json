@@ -1,0 +1,8 @@
+{
+  "name": "Scrumdip",
+  "description": "Counting how many people have a Scrum certificate, so you don't have to",
+  "image": "heroku/python",
+  "repository": "https://github.com/heroku/python-getting-started",
+  "keywords": ["python" ],
+  "-addons": [ "heroku-postgresql" ]
+}
