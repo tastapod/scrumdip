@@ -39,3 +39,18 @@ def insert_results(cert, count):
             ''',
             (cert, count))
         conn.commit()
+
+
+def latest_count(cert):
+    with closing(connect()) as conn:
+        rows = conn.execute(
+            '''
+            SELECT count, created FROM cert_counts
+            WHERE cert = ?
+            ORDER BY created DESC
+            LIMIT 1
+            ''',
+            (cert,)
+        )
+        row = rows.fetchone()
+        return row[0] if row else 0

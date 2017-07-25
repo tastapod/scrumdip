@@ -63,8 +63,8 @@ def get_page(cert):
 
 
 def get_total(cert):
-    r = get_page(cert)
-    return extract_total(r.text) if r.ok else 0
+    res = get_page(cert)
+    return extract_total(res.text) if res.ok else 0
 
 
 if __name__ == '__main__':
