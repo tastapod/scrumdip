@@ -1,28 +1,19 @@
-import sqlite3
-import os.path
+import psycopg2 as db
 from contextlib import closing
-
-DEFAULT_DB_FILE = 'scrumdip.db'
 
 
 def connect():
-    # fallback DB file based on location of the current source file
-    here = os.path.abspath(os.path.dirname(__file__))
-    fallback_file = os.path.join(here, DEFAULT_DB_FILE)
-
-    # use DB file location from environment or fall back
-    db_file = os.environ.get('DB_FILE', fallback_file)
-    return sqlite3.connect(db_file)
+    return db.connect('')
 
 
 def check_or_create_table():
-    with closing(connect()) as conn:
-        conn.execute(
+    with closing(connect()) as conn, closing(conn.cursor()) as cur:
+        cur.execute(
             '''
             CREATE TABLE IF NOT EXISTS cert_counts (
-                id INTEGER PRIMARY KEY,
-                cert TEXT,
-                count INTEGER,
+                id SERIAL PRIMARY KEY,
+                cert VARCHAR(10) NOT NULL,
+                count INTEGER NOT NULL,
                 created TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
             '''
@@ -31,26 +22,26 @@ def check_or_create_table():
 
 
 def insert_results(cert, count):
-    with closing(connect()) as conn:
-        conn.execute(
+    with closing(connect()) as conn, closing(conn.cursor()) as cur:
+        cur.execute(
             '''
             INSERT INTO cert_counts (cert, count)
-            VALUES (?, ?)
+            VALUES (%s, %s);
             ''',
             (cert, count))
         conn.commit()
 
 
 def latest_count(cert):
-    with closing(connect()) as conn:
-        rows = conn.execute(
+    with closing(connect()) as conn, closing(conn.cursor()) as cur:
+        cur.execute(
             '''
             SELECT count, created FROM cert_counts
-            WHERE cert = ?
+            WHERE cert = %s
             ORDER BY created DESC
-            LIMIT 1
+            LIMIT 1;
             ''',
             (cert,)
         )
-        row = rows.fetchone()
+        row = cur.fetchone()
         return row[0] if row else 0
