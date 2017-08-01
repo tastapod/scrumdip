@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+
+{% block head %}
+    {{ super() }}
+{% endblock head %}
+
+{% block title %}Latest counts{% endblock title %}
+
+{% block content %}
+<h1 id="heading">Latest counts</h1>
+    {%- if counts %}
+    <table class="table table-hover">
+        <tbody>
+        {%- for cert, count, timestamp in counts | sort %}
+            <tr>
+                <td>{{ cert }}</td>
+                <td>{{ count }}</td>
+                <td>{{ timestamp }}</td>
+            </tr>
+        {%- endfor %}
+        </tbody>
+    </table>
+    {%- endif %}
+        
+{% endblock content %}
