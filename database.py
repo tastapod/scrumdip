@@ -6,7 +6,7 @@ def connect():
     return db.connect('')
 
 
-def check_or_create_table():
+def check_or_create_tables():
     with closing(connect()) as conn, closing(conn.cursor()) as cur:
         cur.execute(
             '''
@@ -35,7 +35,7 @@ def insert_results(cert, count):
             VALUES (%(cert)s, %(count)s);
 
             DELETE FROM cert_latest where cert = %(cert)s;
-            INSERT INTO cert_history (cert, count)
+            INSERT INTO cert_latest (cert, count)
             VALUES (%(cert)s, %(count)s);
             ''',
             dict(cert=cert, count=count))
@@ -57,4 +57,4 @@ def latest_counts():
         cur.execute(
             '''SELECT cert, count, created FROM cert_latest; ''',
         )
-        return = cur.fetchall()
+        return cur.fetchall()
