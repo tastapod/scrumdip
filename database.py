@@ -1,9 +1,23 @@
-import psycopg2 as db
+import os
+import urllib
 from contextlib import closing
+import psycopg2
 
 
 def connect():
-    return db.connect('')
+    if "DATABASE_URL" in os.environ:
+        urllib.parse.uses_netloc.append("postgres")
+        url = urllib.parse.urlparse(os.environ["DATABASE_URL"])
+
+        return psycopg2.connect(
+            database=url.path[1:],
+            user=url.username,
+            password=url.password,
+            host=url.hostname,
+            port=url.port
+        )
+    else:
+        return psycopg2.connect('')
 
 
 def check_or_create_tables():

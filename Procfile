@@ -1,1 +1,1 @@
-web: gunicorn scrumdip:app
+web: waitress-serve --port=$PORT webapp:app

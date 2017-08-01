@@ -15,7 +15,6 @@ def index():
 def update_counts():
     database.check_or_create_tables()
     counts = fetch.get_all_counts()
-    print(counts)
     for cert, count in counts:
         database.insert_results(cert, count)
 
@@ -26,5 +25,4 @@ def update_counts():
 def latest_counts():
     counts = database.latest_counts()
     counts = [(cert, counts, ts.date()) for cert, counts, ts in counts]
-    print(counts)
     return render_template("latest_counts.html", counts=counts)
